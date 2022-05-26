@@ -1,0 +1,136 @@
+    #include <bits/stdc++.h>
+using namespace std;
+
+struct node{
+    int data;
+    node *left,*right;
+}*root=NULL;
+
+class tree{
+    public:
+    node *temp;
+    void create();
+    void insert(node*,node*);
+    void search(node*,int);
+    void minimum(node*);
+    node* mirror(node*);
+    int height(node*);
+    void preorder(node*);
+};
+
+int tree::height(node *T){
+    if(T==NULL) return 0;
+    if(T->left == NULL && T->right == NULL) return 0;
+    return(max(height(T->left),height(T->right))+1);
+}
+
+void tree:: create(){
+    char ch;
+    do{
+        temp = new node;
+        cout << "Enter data";
+        cin >> temp->data;
+        temp->left=NULL;
+        temp->right=NULL;
+        if(root==NULL) root=temp;
+        else{
+            insert(root,temp);
+        }
+        cout<< "wanna continue? ";
+        cin >> ch;
+    }while(ch == 'y');
+}
+
+void tree:: insert(node *subroot,node *temp){
+    if(temp->data < subroot->data){
+        if(subroot->left==NULL) subroot->left=temp;
+        else insert(subroot->left,temp);
+    }
+    else if(temp->data > subroot->data){
+        if(subroot->right==NULL) subroot->right=temp;
+        else insert(subroot->right,temp);
+    }
+}
+
+node* tree::mirror(node* T){
+    if(T){
+        mirror(T->left);
+        mirror(T->right);
+        node* temp = T->left;
+        T->left = T->right;
+        T->right = temp;
+    }
+}
+
+void tree::preorder(node *root){
+    if(root!=NULL){
+        cout << root->data << "\t ";
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+
+void tree::minimum(node *root){
+    while(root->left!=NULL) root = root->left;
+    cout << root->data;
+}
+
+void tree::search(node* r,int x){
+    int flag=0;
+    while(r!=NULL){
+        if(x<r->data){
+            r=r->left;
+        }
+        else if(x>r->data){
+            r=r->right;
+        }
+        else if(x==r->data){
+            flag = 1;
+            break;
+        }
+    }
+    if(flag == 1) cout << "data found";
+    else cout << "not found";
+}
+
+int main(){
+    tree t;
+    int choice;
+    do{ 
+        cout<<"\n\n1)Create\n2)search\n3)Minimum Element"; 
+        cout<<"\n4)Height\n5)preorder display\n 6.Mirror"; 
+        cout <<"\nEnter Your Choice :"; 
+        cin>>choice;
+        switch(choice){ 
+            case 1: 
+                t.create();
+                break; 
+            case 2: 
+                cout << "Enter value you wanna search";
+                int x;cin >>x;
+                t.search(root,x); 
+                break; 
+            case 3: 
+                cout << "Minimum element is: ";
+                t.minimum(root);
+            case 4: 
+                cout<<"\nHeight = "<<t.height(root);
+                break;
+            case 5:
+                t.preorder(root); 
+                break; 
+            
+            case 6: 
+                cout<<"\n Preorder on original tree \n"; 
+                t.preorder(root); 
+                t.mirror(root); 
+                cout<<"\n Preorder on mirror tree \n"; 
+                t.preorder(root); 
+                break;
+            case 7:
+                exit(0);
+        }
+    }while(choice!=7); 
+    return 0;
+}
+    

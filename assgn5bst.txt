@@ -1,0 +1,168 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct node{
+    char key[20],mean[20];
+    node* left,*right;
+}*root = NULL;
+
+class dict{
+    public:
+    void create();
+    void insert(node*,node*);
+    void update(node*,char[]);
+    node* del(node*,char[]);
+    void search(node*,char[]);
+    void preorder(node*);
+};
+
+
+void dict::create(){
+    node *temp;
+    char ch;
+    do{
+        temp = new node;
+        cout << "\nEnter key: ";
+        cin >> temp->key;
+        cout << "Enter Meaning: ";
+        cin >> temp->mean;
+        temp->left = temp->right = NULL;
+        if(root == NULL){
+            root=temp;
+        }
+        else{
+            insert(root,temp);
+        }
+        cout << "\nWanna Continue? ";
+        cin>>ch;
+    }while(ch == 'y');
+}
+
+void dict::insert(node *parent,node *child){
+    if(strcmp(child->key,parent->key)==0){
+        if(parent->left == NULL) parent->left = child;
+        else insert(parent->left,child);
+    }
+    else{
+        if(root->right == NULL) root->right = child;
+        else insert(parent->right,child);
+    }
+}
+
+void dict::update(node *T,char k[]){
+    while(T){
+        if(strcmp(k,T->key) == 0){
+            cout << "\nEnter new meaning of keyword: " << T->key;
+            cin>> T->mean;
+            break;
+        }
+        else if(strcmp(k,T->key) < 0){
+            T= T->left;
+        }
+        else if(strcmp(k,T->key) > 0){
+            T= T->right;
+        }
+    }
+}
+
+void dict::search(node *T,char k[]){
+    int c=0;
+    while(T){
+        c++;
+        if(strcmp(k,T->key)==0){
+            cout << "no of comparisons:"<<c;
+        }
+        else if(strcmp(k,T->key)<0){
+            T=T->left;
+        }
+        else if(strcmp(k,T->key)>0){
+            T=T->right;
+        }
+    }
+}
+
+node* dict:: del(node* T,char k[]){
+    node *temp;
+    if(T==NULL){
+        cout <<"Element not found";
+        return T;
+    }
+    if(strcmp(k,T->key) <0){
+        T->left=del(T->left,k);
+        return T;
+    }
+    if(strcmp(k,T->key) > 0){
+        T->right = del(T->right,k);
+        return T;
+    }
+    if(T->right==NULL && T->left==NULL){
+        temp= T;
+        delete temp;
+        return NULL;
+    }
+    if(T->right==NULL){
+        temp = T;
+        T = T->right;
+        delete temp;
+        return T;
+    }
+    else if(T->left==NULL){
+        temp = T;
+        T = T->right;
+        delete temp;
+        return T;
+    }
+
+    temp = min(T->right,T->left);
+    strcpy(T->key,temp->key);
+    T->right = del(T->right,temp->key);
+    return T;
+
+}
+
+void dict::preorder(node* p){
+    if(p){
+        cout<< "Key: " << p->key << " Meaning: " << p->mean;
+        preorder(p->left);
+        preorder(p->right);
+    }
+}
+
+int main(){
+    char ch;
+    dict d;
+    do{
+        int n;
+        char key[20];
+        cout<<"\n1.Create \n2.Display \n3.Search\n4.Update\n 5.Delete";
+        cout << "\nEnter your choice: ";
+        cin >> n;
+        switch(n){
+            case 1:
+            d.create();
+            break;
+            case 2:
+            d.preorder(root);
+            break;
+            case 3:
+            cout <<"\nEnter key you want to search";
+            cin >> key;
+            d.search(root,key);
+            break;
+            case 4:
+            cout <<"\nEnter key you want to search";
+            cin >> key;
+            d.update(root,key);
+            break;
+            case 5:
+            cout <<"\nEnter key you want to Delete";
+            cin >> key;
+            d.del(root,key);
+            break;
+            case 6:
+            exit(0);
+        }
+        cout << "\nDo you want to continue? ";
+        cin >> ch;
+    }while(ch=='y');
+}

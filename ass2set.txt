@@ -1,0 +1,112 @@
+class Set:
+    def __init__(self,size):
+        self.s = []
+        for i in range(size):
+            e = int(input("enter element"))
+            self.add(e)
+
+    def get_set(self):
+        return self.s
+    
+    def __str__(self):
+        string = ""
+        for i in range(len(self.s)):
+            string += str(self.s[i])
+            string +=" "
+        return string
+
+    def add(self,e):
+        if e not in self.s:
+            self.s.append(e)
+    
+    def remove(self,e):
+        if e in self.s:
+            self.s.remove(e)
+    
+    def subset(self,setB):
+        for e in setB.get_set():
+            if e not in self.s:
+                return False
+        return True
+    
+    def union(self,setB):
+        newSet = self.s
+        for e in setB.get_set():
+            if e not in self.s:
+                newSet.append(e)
+        return newSet
+
+    def intersect(self,setB):
+        newSet = Set(0)
+        for i in range(len(self.get_set())):
+            for j in range(len(setB.get_set())):
+                if self.get_set()[i] == setB.get_set()[j]:
+                    newSet.add(self.get_set()[i])
+        return newSet
+    
+    def difference(self,setB):
+        newSet = Set(0)
+        for e in self.get_set():
+            if e not in setB.get_set():
+                newSet.add(e)
+        return newSet
+    
+def createSet():
+    n = int(input("enter size:"))
+    s = Set(n)
+    return s 
+
+s1 = createSet()
+print(str(s1))
+
+while(True):
+    print("1.Add")
+    print("2.remove")
+    print("3.Conatains")
+    print("4.Size")
+    print("5.Intersection")
+    print("6.Union")
+    print("7.Difference")
+    print("8.subset")
+    print("9.exit")
+    choice = int(input('Enter choice'))
+    if choice == 1:
+        e = int(input("Enter number you wanna add: "))
+        s1.add(e)
+        print(str(s1))
+    elif choice == 2:
+        e = int(input("Enter number you wanna delete: "))
+        s1.remove(e)
+        print(str(s1))
+    elif choice == 3:
+        e = int(input("Enter number you wanna search: "))
+        if e in s1.get_set():
+            print("Number Present in Set")
+        else:
+            print("Number is not Present in Set")
+    elif choice == 4:
+        print(str(len(s1.get_set())))
+    elif choice == 5:
+        s2 = createSet()
+        s3 = s1.intersect(s2)
+        print(str(s3))
+    elif choice == 6:
+        s2 = createSet()
+        s3 = s1.union(s2)
+        print(str(s3))
+    elif choice == 7:
+        s2 = createSet()
+        s3 = s1.difference(s2)
+        print(str(s3))
+    elif choice == 8:
+        s2 = createSet()
+        if s1.subset(s2) == True:
+            print("Set B is the Subset of Set A")
+        else:
+            print("Set B is not Subset of Set A")
+    elif choice == 9:
+        break
+
+    
+
+

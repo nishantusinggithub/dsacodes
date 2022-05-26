@@ -1,0 +1,197 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct node{
+	string key;
+	string meaning;
+	int height;
+	node *left,*right;
+}*root=NULL;
+
+class AVL{
+	public:
+	void create();
+	node* insert(node*,string,string);
+	void preorder(node*);
+	void search(node*,string);
+	void update(node*,string);
+};
+
+int nodeHeight(node *p){
+    int hl,hr;
+    hl = p && p->left?p->left->height:0;
+    hr = p && p->right?p->right->height:0;
+    return hl > hr? hl+1:hr+1;
+}
+
+int balanceFactor(node *p){
+    int hl,hr;
+    hl=p && p->left?p->left->height:0;
+    hr=p && p->right?p->right->height:0;
+    return hl-hr;
+}
+
+node* llRotation(node *p){
+    node *pl = p->left;
+    node *plr = pl->right;
+    pl->right = p;
+    p->left= plr;
+    p->height = nodeHeight(p);
+    pl->height = nodeHeight(pl);
+
+    if(root==p) root = pl;
+    return pl;
+}
+
+node* rrRotation(node *p){
+    node *pr = p->right;
+    node *prl = pr->left;
+    pr->left = p;
+    p->right = prl;
+    p->height = nodeHeight(p);
+    pr->height = nodeHeight(pr);
+}
+
+node* rlRotation(node *p){
+    node *pr = p->right;
+    node *prl = pr->left;
+    pr->left = prl->right;
+    p->right = prl->left;
+    prl->right=pr;
+    prl->left=p;
+    pr->height=nodeHeight(pr);
+    p->height=nodeHeight(p);
+    prl->height=nodeHeight(prl);
+
+    if(root == p) root = prl;
+    return prl;
+}
+
+node* lrRotation(node *p){
+    node *pl = p->left;
+    node *plr = pl->right;
+    pl->right = plr->left;
+    p->left = plr->right;
+
+    plr->left = pl;
+    plr->right=p;
+
+    pl->height=nodeHeight(pl);
+    p->height=nodeHeight(p);
+    plr->height=nodeHeight(plr);
+
+    if(root == p) root=plr;
+    return  plr;
+}
+
+void AVL::create(){
+	char ch;
+	while(true){
+		cout << "\nEnter the keyword: ";
+		string key;cin >>key;
+		cout << "Enter the meaning: ";
+		string meaning;cin >>meaning;
+		if(root==NULL){
+			root=insert(root,key,meaning);
+		}
+		else insert(root,key,meaning);
+		cout << "\nWant to add more? ";
+		cin >> ch;
+		if(ch=='y') continue;
+		else break;
+	};
+}
+
+node* AVL::insert(node *p,string key,string meaning){
+    node *t = NULL;
+    if(p==NULL){
+        t = new node;
+        t->key = key;
+		t->meaning = meaning;
+        t->height = 1;
+        t->left= t->right = NULL;
+        return t;
+    }
+    if(key< p->key){
+        p->left = insert(p->left,key,meaning);
+    }
+    else if(key > p->key){
+        p->right = insert(p->right,key,meaning);
+    }
+
+    p->height=nodeHeight(p);
+
+    if(balanceFactor(p)==2 && balanceFactor(p->left)==1) return llRotation(p);
+    else if(balanceFactor(p)==2 && balanceFactor(p->left)== -1) return lrRotation(p);
+    else if(balanceFactor(p)==-2 && balanceFactor(p->left)==-1) return rrRotation(p);
+    else if(balanceFactor(p)==-2 && balanceFactor(p->left)==1) return rlRotation(p);
+    return p;
+}
+
+void AVL::preorder(node *p){
+    if(p){
+        cout << p->key << " " << p->meaning << endl;
+        preorder(p->left);
+        preorder(p->right);
+    }
+}
+
+void AVL::search(node* p,string k){
+	int c=0;
+	while(p){
+		c++;
+		if(k == p->key){
+			cout << "\nno of comparisions: " << c;
+			break;
+		}
+		else if(k < p->key) p=p->left;
+		else if(k > p->key) p=p->right;
+	}
+}
+
+void AVL::update(node* p,string k){
+	while(p){
+		if(k == p->key){
+			cout<<"\nEnter New Meaning ofKeyword"<<p->key;
+            cin>>p->meaning;
+			break;
+		}
+		else if(k < p->key) p=p->left;
+		else if(k > p->key) p=p->right;
+	}
+}
+
+int main(){
+	AVL a;
+	char ch;
+	while(true){
+		cout << "\n1.create\n2.search\n3.update\n4.display\n5.Exit";
+		cout << "\nEnter your choice: ";
+		int n;cin>> n;
+		string key;
+		switch(n){
+			case 1:
+			a.create();
+			break;
+			case 2:
+			cout<<"\nEnter key you want to search";
+			cin>>key;
+			a.search(root,key);
+			break;
+			case 3:
+			cout<<"\nEnter key you want to update";
+			cin>>key;
+			a.update(root,key);
+			break;
+			case 4:
+			a.preorder(root);
+			break;
+			case 5:
+			exit(0);
+		}
+		cout << "\nDo you want to continue? ";
+		cin >> ch;
+		if(ch == 'y') continue;
+		else break;
+	}
+}
