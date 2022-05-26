@@ -1,0 +1,51 @@
+class Record:
+    def __init__(self):
+        self.name =None
+        self.number = None
+    
+    def get_number(self):
+        return self.number
+    
+    def get_name(self):
+        return self.name
+    
+    def set_name(self,name):
+        self.name = name
+    
+    def set_number(self,number):
+        self.number = number
+    
+    def __str__(self):
+        record = "Name:  " + str(self.name) + "  Number  " + str(self.number)
+        return record
+
+class doubleHash:
+    def __init__(self):
+        self.size = int(input("Enter size of Table:"))
+        self.table = list(None for i in range(self.size))
+
+    def hashFunction(self,element):
+        return element%self.size
+    
+    def hashFunction2(self,element):
+        return 5-(element%5)
+
+    def insert(self,record):
+        posFound = False
+        position = self.h1(record.get_number())
+        
+        if self.table[position] == None:
+            self.table[position] = record
+            print("Phone number of " + record.get_name() + " is at position " + str(position))
+        else:
+            print("Collision has occured for " + record.get_name() + "'s phone number at position " + str(position) + " finding new Position.")
+            i = 0
+            while i < self.size:
+                position = (self.hashFunction(record.get_number()) + i*self.hashFunction2(record.get_number()))%self.size
+                if self.table[position] == None:
+                    self.table[position] = record
+                    print("Phone number of " + record.get_name() + " is at position " + str(position))
+                    break
+                else:
+                    i+=1
+
