@@ -1,0 +1,161 @@
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+class Student 
+{
+    private:
+        
+
+    public:
+        int rno;
+        char name[30];
+        char division[10];
+        char address[10];
+        void accept()
+        {
+            cout<<"Enter student deatils:\n";
+            cout<<"\nEnter Roll no:";
+            cin>>rno;
+            cout<<"\nEnter name of student ";
+            cin>>name;
+            cout<<"\nenter division";
+            cin>>division;
+
+        }
+
+        void display()
+        {
+            cout<<"\nRoll no:"<<rno<<"\n Name : "<<name<<"\n division : "<<division<<endl;
+        }
+
+        int getrno()
+        {
+            return rno;
+        }
+
+};
+
+void write()
+{
+    fstream fout;
+    Student x;
+
+    fout.open("student.txt",ios::out|ios::app);
+    x.accept();
+    fout.write((char *)&x,sizeof(x));
+    fout.close();
+}
+
+void display_record()
+{
+    fstream fin;
+    Student x;
+
+    fin.open("student.txt",ios::in);
+
+   while( fin.read((char *)&x,sizeof(x)))
+   {
+       x.display();
+   }
+    fin.close();
+
+}
+
+void delete_record()
+{
+    Student x;
+    int no;
+
+    fstream fin,fout;
+
+    cout<<"Enter the roll no to be deleted:\n";
+    cin>>no;
+
+    fin.open("student.txt",ios::in);
+    fout.open("temp.txt",ios::out|ios::app);
+
+    while(fin.read((char *)&x,sizeof(x)))
+    {
+        if(no!=x.getrno())
+        {
+            fout.write((char *)&x,sizeof(x));
+        }
+    }
+    fin.close();
+    fout.close();
+    remove("student.txt");
+    rename("temp.txt","student.txt");
+}
+
+
+void search()
+{
+    ifstream fin;
+    Student x;
+
+    int no,flag=0;
+
+    cout<<"enter roll no to be searched:\n";
+    cin>>no;
+
+    fin.open("student.txt",ios::in);
+    
+    while(fin.read((char *)&x,sizeof(x)))
+    {
+        if(no==x.getrno())
+        {
+            x.display();
+            flag=1;
+        }
+    }
+    if(flag==0)
+    {
+        cout<<"Not found\n";
+    }
+    fin.close();
+
+}
+
+int main()
+{
+    fstream fin,fout;
+
+    Student x;
+    int ch,no,flag;
+
+    while(1)
+    {
+        cout<<"*MENU*\n";
+        cout<<"1.Add student deatils:\n";
+        cout<<"2.Display\n";
+        cout<<"3.Delete details by roll no:\n";
+        cout<<"4.Search student by roll no\n";
+        cout<<"Enter your choice:\n";
+        cin>>ch;
+
+      
+        switch(ch)
+        {
+            case 1:
+                write();
+                break;
+            case 2:
+                display_record();
+                break;
+            case 3:
+                delete_record();
+                break;
+            case 4:
+                search();
+                break;
+            case 5:
+                exit(0);
+            default:
+            cout<<"Please enter valid choice ";
+
+         }
+     }
+         return 0;
+}
