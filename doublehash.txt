@@ -1,0 +1,96 @@
+
+class Record:
+    def __init__(self):
+        self.name = None
+        self.number = None
+    
+    def get_number(self):
+        return self.number
+    
+    def get_name(self):
+        return self.name
+    
+    def set_name(self,name):
+        self.name = name
+    
+    def set_number(self,number):
+        self.number = number
+    
+    def __str__(self):
+        record = "Name:  " + str(self.name) + "  Number  " + str(self.number)
+        return record
+
+class Doublehashing:
+    def __init__(self):
+        self.size = int(input("Enter size of Table: "))
+        self.table = list(None for i in range(self.size))
+    
+    def hashfunction(self,e):
+        return e%self.size
+    
+    def hashfunction2(self,e):
+        return 5-(e%5)
+    
+    def insert(self,record):
+        position = self.hashfunction(record.get_number())
+        if self.table[position] == None:
+            self.table[position] = record
+            print("New element inserted")
+        else:
+            i = 1;
+            while i <self.size:
+                position = (self.hashfunction(record.get_number())+i*self.hashfunction2(record.get_number()))%self.size
+                if self.table[position] == None:
+                    self.table[position] = record
+                    print("New element inserted")
+                    break
+                else:
+                    i+=1
+
+    def search(self,record):
+        isFound = False
+        position = self.hashfunction(record.get_number())
+        if self.table[position].get_number() == record.get_number():
+            print("Found")
+            isFound = True
+        else:
+            i=1;
+            while i <self.size:
+                if self.table[position].get_number() == record.get_number():
+                    print("Found")
+                    isFound = True
+                    break
+                elif self.table[position].get_number() != record.get_number():
+                    i +=1
+        
+        if isFound == False:
+            print("Not found")
+        
+    def display(self):
+        for i in range(self.size):
+            print(str(self.table[i]))
+
+def input_record():
+    name = input("Enter name: ")
+    number = int(input("Enter number: "))
+    record = Record()
+    record.set_name(name)
+    record.set_number(number)
+    return record 
+
+h1 = Doublehashing()
+while(True):
+    choice = int(input("Enter Choice: "))
+    if choice == 1:
+        record = input_record()
+        h1.insert(record)
+    if choice == 2:
+        record = input_record()
+        h1.search(record)
+    if choice ==3:
+        h1.display()
+    if choice ==4:
+        break
+
+    
+            
